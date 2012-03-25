@@ -1,0 +1,44 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    <link href="@System.Web.Optimization.BundleTable.Bundles.ResolveBundleUrl("~/Content/css")" rel="stylesheet" type="text/css" />
+    <script src="~/Scripts/jquery-1.7.1.js" type="text/javascript"></script>
+    <script src="~/Scripts/knockout.debug.js" type="text/javascript"></script>
+    <script src="~/Scripts/upshot.js" type="text/javascript"></script>
+    <script src="~/Scripts/upshot.compat.knockout.js" type="text/javascript"></script>
+    <script src="~/Scripts/upshot.knockout.extensions.js" type="text/javascript"></script>
+    <script src="~/Scripts/datajs-1.0.2.js" type="text/javascript"></script>
+</head>
+<body>
+    <div data-bind="foreach: data.getEntities()">
+		<span data-bind="text: Name()"></span>
+		<ul data-bind="foreach: Children()">
+			<li data-bind="text: Name()"></li>
+		</ul>
+	</div>
+    <script>
+        $((function (global) {
+            // declare our app
+            var self = global.testApp = {};
+
+            // start async get data
+            upshot.dataSources = upshot.dataSources || {};
+            upshot.dataSources.ParentThings = upshot.RemoteDataSource({
+                provider: upshot.ODataDataProvider,
+                providerParameters: { url: "/OData.svc", operationName: "ParentThings", operationParameters: { $expand: "Children"} },
+                bufferChanges: true,
+                dataContext: undefined,
+                mapping: {}
+            });
+            self.data = upshot.dataSources.ParentThings.refresh();
+
+            // apply bindings
+            ko.applyBindings(self);
+
+        })(window));
+    </script>
+</body>
+</html>

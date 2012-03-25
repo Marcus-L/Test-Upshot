@@ -1,0 +1,5 @@
+TestApp/bin/*
+TestApp/obj/*
+packages/*
+*.suo
+*.user
